@@ -1,0 +1,367 @@
+// 
+// LIVE DRAWING TOOL 24
+// by Daniele @ Fupete for the course SEI2014 @ UnirSM  
+// github.com/fupete — github.com/sei2014-unirsm
+// Didactic purpose, MIT License, March 2014, San Marino
+// —
+
+/**
+ * USING ARRAYLIST TO DEFINE/DRAW/ANIM A TRACK OF POINTS/FORCE VECTORS > BRUSH...
+ *
+ * MOUSE
+ * drag                : add points/tracks
+ * 
+ * KEYS
+ * 0                   : redraw background each draw() loop, OR not
+ * 1                   : show points
+ * 2                   : show vectors forces proportional to speed
+ * Q                   : show Quad shapes
+ * 3                   : anim | real time polar deformation
+ * E                   : anim | real time polar deformation II
+ * 4                   : anim | real time walker deformation
+ * 5                   : anim | life to a point walker
+ * 6                   : temporized self destruction activated
+ * 7                   : connecting points modulo...
+ * 8                   : rainbow trippy colors vs. red
+ * 9                   : fill on/off (for quads...)
+ * UP/DOWN             : strokeWeight
+ * LEFT/RIGHT          : alpha
+ *
+ * SPEED is displayed middle left: left current,
+ right average last 100 points
+ * 
+ * S                   : Record a sequence of images (.tga) | Start(red) / Stop(Black) recording tgas
+ * p                   : Record a PDF from next Draw cycle
+ *
+ * TO DO:
+ * namefiles from date/time in folders to avoid duplicates, better quad shapes, curvevertex.., better anim classes/modifiers outside the points shift loop, tablet handlers, different tabs/files for different classes... code structure optimization... speeds/angle from Force/vectot class/arraylist...
+ *
+ */
+
+
+
+// IMPORTS AND GLOBAL VARIABLES DECLARATION
+
+
+// pdf library
+import processing.pdf.*;
+
+// boolean switches on/off for the keyboard interface
+boolean saveF, showQuad, showPoint, livePolar, livePolar2, liveWalker, pointWalker, toZero, connections, rainbow, savePDF, showForce, showFill = false;
+boolean reDraw = true;
+
+// start draw values
+int sWeight = 2;
+int sAlpha = 100;
+
+// ArrayLists of objects, class Point and class Force
+ArrayList <Point> points = new ArrayList <Point>();
+ArrayList <Force> forces = new ArrayList <Force>();
+
+
+
+// SETUP
+
+
+void setup() {
+
+  //size(displayWidth, displayHeight);     // fullScreen
+  size(1200, 720);  // better video sequence of frames export...
+  smooth();
+  colorMode(HSB);
+  background(255);
+  frameRate(30);
+  //noCursor();    // no cursor
+  noFill();
+
+} // setup()
+
+
+
+// DRAW LOOP
+
+
+void draw() {
+
+  if (savePDF) beginRecord(PDF, "frame-#######.pdf");
+
+  strokeWeight(sWeight);
+
+  if (reDraw) background(255);
+
+  for (int i=2;i<points.size();i++) {
+
+    if (showPoint)   points.get(i).display();        // show the current point
+
+    if (pointWalker) points.get(i).update();         // give life Walker to the point object
+
+    // get the color of the point if defined...
+    stroke(points.get(i).c, sAlpha);
+
+    // MAIN DRAWING BRUSH
+
+    if (!points.get(i).isEndPoint) {
+
+    // draw a line between the current and the previous point if it's not an end point
+    line(points.get(i).x, points.get(i).y, points.get(i-1).x, points.get(i-1).y);
+
+    // show each recorded point perpendicular force vectors proportional to drawing speed
+      if (showForce && i<forces.size()) {
+        line (forces.get(i).A.x, forces.get(i).A.y, forces.get(i).B.x, forces.get(i).B.y);
+        ellipse (forces.get(i).A.x, forces.get(i).A.y, 5, 5);
+        ellipse (forces.get(i).B.x, forces.get(i).B.y, 5, 5);
+      }
+
+     // draw quad shapes from two points using the force vectors as referrers
+      if (showQuad && i<forces.size()-1 ) {
+        quad(forces.get(i).A.x, forces.get(i).A.y, forces.get(i).B.x, forces.get(i).B.y, forces.get(i+1).B.x, forces.get(i+1).B.y, forces.get(i+1).A.x, forces.get(i+1).A.y);
+      }
+
+    } // MAIN DRAWING BRUSH
+
+    // connecting 1 point each 10 using modulo
+    if (connections) { 
+      //if (i%int(points.size()/20)==0);
+      if (i%10 == 0)
+        line(points.get(i).x, points.get(i).y, points.get(points.size()-i).x, points.get(points.size()-i).y);
+    }
+
+  } // for()
+
+  // speed from the last point | todo: with vectors magnitude in Force/forces class
+
+  if (points.size()>1) {
+    float dx = points.get(1).x - points.get(0).x;
+    float dy = points.get(1).y - points.get(0).y;
+    float h = sqrt(dx*dx+dy*dy);
+    line(50, height/2, 50, height/2-h);
+  } //speed
+
+  // average speed from the last 100 points | todo: with vectors magnitude in Force/forces class
+
+  if (points.size()>100) {
+    float[] Dx = new float[99];
+    float[] Dy = new float[99];
+    float[] H = new float[99];
+    float aH = 0;
+    for (int s=0; s<99; s++) {
+      Dx[s] = points.get(s+1).x - points.get(s).x;
+      Dy[s] = points.get(s+1).y - points.get(s).y;
+      H[s] = sqrt(Dx[s]*Dx[s]+Dy[s]*Dy[s]);
+      aH+=H[s];
+    }
+    aH/=100;
+    line(100, height/2, 100, height/2-aH);
+  } //average speed
+
+  // start to delete the array of points from the last one if the function self destruction is activated
+  if (toZero && points.size()>2 && forces.size()>2) {
+    points.remove(points.size()-1);
+    forces.remove(forces.size()-1);
+  }
+
+  if (savePDF) {
+    endRecord();
+    savePDF = false;
+  }
+
+  if (saveF) {
+    saveFrame("frame-#######.tga");
+  }
+}  // draw()
+
+
+
+// THE REAL DRAWING TOOL
+// when you click and drag around you draw a trail of Points/Forces
+
+
+void mouseDragged() {
+
+  // shift the array by one, and do mods during the shifting if you want
+  for (int i = points.size()-1;i>0;i--) {
+
+    // shift the array by one to free place zero for next point to record
+    points.get(i).copy(points.get(i-1));
+
+    // real time animation mods of the trail/s
+
+    //  deformate the track in real time, polar...
+    if (livePolar) {
+      points.get(i).x+= cos(radians(frameCount+i))*3.6;
+      points.get(i).y-= sin(radians(frameCount+i))*3.6;
+    }
+
+    if (livePolar2) {
+      points.get(i).x+= cos(radians(frameCount%i))*3.6;
+      points.get(i).y-= sin(radians(frameCount%i))*3.6;
+    }
+
+    if (liveWalker) {
+      // deformate the track in real time, basic walker...
+      points.get(i).x+=random(-2, 2);
+      points.get(i).y+=random(-2, 2);
+    }
+
+    // end real time animation mods
+
+  }
+
+  // shift also the array of Forces by one
+  for (int j = forces.size()-1; j>0; j--) {
+    forces.get(j).copy(forces.get(j-1));
+  }
+
+  // THE RECORDER OF CURRENT POINT
+  // add the current Point to the ArrayList at position 0
+  points.add(0, new Point(mouseX, mouseY, false));
+
+  // THE RECORDER OF CURRENT FORCES
+  if (points.size() > 2) {
+
+    //  perpendicolar forces proportional to the speed, make by Vectors, usefull to make thickness of a brush with a curvevertex/quad shape, ...
+    PVector currentVect = new PVector (points.get(0).x, points.get(0).y);
+    PVector currentVect1 = new PVector (points.get(0).x, points.get(0).y);
+    // Vector distance between last two points
+    PVector deltacurrentVect = new PVector (points.get(0).x-points.get(1).x, points.get(0).y-points.get(1).y);
+    //float deltacurrentAngle = currentVect.heading(); // direction angle if needed just uncomment...
+    deltacurrentVect.div(2); // half on one side, half on the other side...
+    deltacurrentVect.rotate(HALF_PI); // one side
+    currentVect.add(deltacurrentVect);
+    deltacurrentVect.rotate(PI); //  the other side
+    currentVect1.add(deltacurrentVect);
+    // record current Forces
+    if (!points.get(1).isEndPoint) forces.add(0, new Force(currentVect, currentVect1));
+
+  }
+} // mouseDragged()
+
+
+void mouseReleased() {
+  // sign the last point object of a mark/trail
+  points.add(0, new Point(mouseX, mouseY, true));
+}
+
+
+// KEYBOARD INTERFACE
+
+
+void keyPressed() {
+  if (key == DELETE || key == BACKSPACE) {
+    background(255);
+    points.clear();
+  }
+  if (key == '0') reDraw = !reDraw;            // redraw background each draw() loop
+  if (key == '1') showPoint = !showPoint;      // show all the points on the track
+  if (key == '2') showForce = !showForce;    // show perpendicolar force proportional to speed    
+  if (key == 'q' || key == 'Q') showQuad = !showQuad;    // show Quad (!!)
+  if (key == '3') livePolar = !livePolar;      // real time live polar deformation
+  if (key == 'e' || key == 'E') livePolar2 = !livePolar2;      // real time live polar deformation
+  if (key == '4') liveWalker = !liveWalker;    // real time live walker deformation
+  if (key == '5') pointWalker = !pointWalker;  // life walker to the Point
+  if (key == '6') toZero = !toZero;            // temporized self destruction activated
+  if (key == '7') connections = !connections;      // randomize points order
+  if (key == '8') rainbow = !rainbow;      // trippy colors
+  if (key == '9') { 
+    if (!showFill) { fill(127.5,255,255); }
+      else { noFill(); }
+    showFill = !showFill;
+    }
+  if (keyCode == UP) sWeight++;
+  if (keyCode == DOWN && sWeight > 2) sWeight--;
+  if (keyCode == LEFT && sAlpha > 39) sAlpha-=20;
+  if (keyCode == RIGHT) sAlpha+=20;
+  if (key == 'S' || key == 's') {
+    saveF = !saveF;
+    if (saveF) {
+      background(255, 255, 255);
+    } 
+    else { 
+      background(0);
+    }
+  }
+  if (key == 'p' || key == 'P') savePDF = !savePDF;
+}  // keypressed()
+
+
+
+
+// FORCES
+// class Force to be moved in another file/tab
+
+
+class Force {
+
+  // def var
+  PVector A, B;
+
+  void copy(Force toCopy) { // tool to duplicate values from another Force, USED to shift by one
+    A = toCopy.A.get();
+    B = toCopy.B.get();
+  } // copy
+
+  Force(PVector Atemp, PVector Btemp) { // constructor
+    A = Atemp.get();
+    B = Btemp.get();
+  } // constructor Force
+
+} // class Force
+
+
+
+
+// POINTS
+// class Point to be moved in another file/tab
+
+
+class Point {
+  
+  // def var
+  float x, y, r, xp, yp, d;
+  color c;
+  boolean isEndPoint;
+
+  void copy(Point toCopy) { // tool to duplicate values from another Point, USED to shift the array by one
+    xp = x;
+    yp = y;
+    x = toCopy.x;
+    y = toCopy.y;
+    r = toCopy.r;
+    c = toCopy.c;
+    // d = dist(x, y, xp, yp);
+    isEndPoint = toCopy.isEndPoint;
+  } // copy
+
+  Point(float ax, float ay, boolean end) { // constructor
+    x=ax;
+    y=ay;
+    r=10;
+
+    if (rainbow) { 
+      c=color(random(200), 255, 255, 200);
+    }
+    else { 
+      c = color(255, 255, 255, 200);
+    }
+
+    isEndPoint = end;
+  } // Point()
+
+  void display() { // behaviour 
+    // Draw a line from this Point to the previous one
+    // stroke(c, 100);
+    // line(x, y, xp, yp);
+
+    // Draw a little rect/quad on this Point
+    noFill();
+    rectMode(CENTER);
+    rect(x, y, r, r);
+  } // display()
+
+  void update() { // behaviour 
+    // Give indipendent life(walker or ...) to each Point
+    x+=random(-2, +2);
+    y+=random(-2, +2);
+  } // update()
+
+} // class Point
