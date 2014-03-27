@@ -1,4 +1,4 @@
-live-drawing-tools
+Live-Drawing-Tools-Fupete-SEI2014
 ==================
 
 *Didactic purpose*. Course SEI2014 @ UnirSM. Organization and syllabus on https://github.com/SEI2014-UnirSM/SEI2014-UnirSM
