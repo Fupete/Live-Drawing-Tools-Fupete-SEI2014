@@ -33,7 +33,7 @@
  * S                   : Record a sequence of images (.tga) | Start(red) / Stop(Black) recording tgas
  * p                   : Record a PDF from next Draw cycle
  *
- * TO DO:
+ * TO DO (too much :-)
  * namefiles from date/time in folders to avoid duplicates, better quad shapes, curvevertex.., better anim classes/modifiers outside the points shift loop, tablet handlers, different tabs/files for different classes... code structure optimization... speeds/angle from Force/vectot class/arraylist...
  *
  */
