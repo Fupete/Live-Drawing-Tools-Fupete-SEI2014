@@ -2,7 +2,7 @@
 // LIVE DRAWING TOOL 18
 // © Daniele @ Fupete for the course SEI2014 @ UnirSM  
 // github.com/fupete — github.com/sei2014-unirsm
-// Didactic purpose, MIT License, March 2014, San Marino
+// Made for educational purposes, MIT License, March 2014, San Marino
 // —
 
 /**
@@ -53,12 +53,12 @@ ArrayList <Force> forces = new ArrayList <Force>();
 void setup() {
 
   //size(displayWidth, displayHeight);     // fullScreen
-  size(1200, 720);  // better video sequence of frames export...
+  size(1200, 720);  // better setting for video sequence of frames export...
   smooth();
   colorMode(HSB);
   background(255);
   frameRate(30);
-  //noCursor();    // no cursor
+  //noCursor();   
   noFill();
 
 } // setup()
