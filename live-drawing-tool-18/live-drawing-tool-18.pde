@@ -250,14 +250,7 @@ class Point {
     x=ax;
     y=ay;
     r=10;
-
-    if (rainbow) { 
-      c=color(random(200), 255, 255, 200);
-    }
-    else { 
-      c = color(255, 255, 255, 200);
-    }
-
+    c = color(255, 255, 255, 200);
     isEndPoint = end;
   } // Point()
 
