@@ -12,6 +12,7 @@
  * drag                : add points/tracks
  * 
  * KEYS
+ * del/backspace       : delete, clear arrays
  * 0                   : redraw background each draw() loop, OR not
  * 1                   : show points
  * 2                   : show vectors forces proportional to speed
@@ -34,7 +35,9 @@
  * p                   : Record a PDF from next Draw cycle
  *
  * TO DO (too much :-)
- * namefiles from date/time in folders to avoid duplicates, better quad shapes, curvevertex.., better anim classes/modifiers outside the points shift loop, tablet handlers, different tabs/files for different classes... code structure optimization... speeds/angle from Force/vectot class/arraylist...
+ * namefiles from date/time in folders to avoid duplicates, better quad shapes, curvevertex.., better anim classes/modifiers outside the points shift loop, tablet handlers, different tabs/files for different classes... code structure optimization... speeds/angle from Force/vector class/arraylist...
+ * ** TO REMEMBER (for me :-)
+ * rewrite all from the base, maybe a class MARK for each sign/gesture. Watch notes on l-d-tool-18.
  *
  */
 
