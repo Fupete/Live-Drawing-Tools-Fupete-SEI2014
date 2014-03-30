@@ -16,6 +16,7 @@
  * DEL/BACKSPACE       : delete all scores (marks)
  * U                   : delete last score (mark)
  * P                   : show/hide notes (points)
+ * R                   : show/hide replay
  *
  * TO DO (too much :-)
  *
@@ -25,6 +26,7 @@ int currentS = 0;
 int last = 0;
 PVector point;
 boolean showPoint = true;
+boolean showReplay = true;
 
 ArrayList <Score> scores = new ArrayList <Score>();
 
@@ -52,6 +54,7 @@ void draw() {
   noFill();
   for (int i=0; i<scores.size(); i++) {
     scores.get(i).anim();
+    if (showReplay) scores.get(i).replay();
     last = scores.get(i).notes.size();
     if (last>0) {
       beginShape();
@@ -105,12 +108,15 @@ void keyPressed() {
     }
   }  
   if (key == 'p' || key == 'P') showPoint = !showPoint;  
+  if (key == 'r' || key == 'R') showReplay = !showReplay;  
 }
 
 
   // A SCORE IS MADE OF A SERIE OF CONNECTED NOTES
 
   class Score {
+    int rIndx = 0;
+    PVector pIndx;
     ArrayList <Note> notes = new ArrayList <Note>();
 
     Score() {
@@ -124,6 +130,15 @@ void keyPressed() {
         //notes.get(i).V.y += sin(radians( frameCount ));
       }
     } // anim()
+
+      void replay() {
+        if (notes.size()>4){
+        pIndx = notes.get(notes.size()-1-rIndx).V.get();
+        rect( pIndx.x , pIndx.y , 20, 20);
+        rIndx++;
+        }
+        if (rIndx > notes.size()-1 ) rIndx=0;
+    } // replay()
   } // class Score
 
 
