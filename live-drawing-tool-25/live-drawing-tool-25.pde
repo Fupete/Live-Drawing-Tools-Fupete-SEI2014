@@ -10,7 +10,12 @@
  * I AM SEARCHING FOR A STRUCTURE/BASEMENT TO BUILD UPON...J
  *
  * MOUSE
- * drag                : add points/tracks
+ * drag                : add a score (mark)
+ * 
+ * KEYS
+ * DEL/BACKSPACE       : delete all scores (marks)
+ * U                   : delete last score (mark)
+ * P                   : show/hide notes (points)
  *
  * TO DO (too much :-)
  *
@@ -19,13 +24,15 @@
 int currentS = 0;
 int last = 0;
 PVector point;
+boolean showPoint = true;
 
 ArrayList <Score> scores = new ArrayList <Score>();
 
 
+
 void setup() {
   //size(displayWidth, displayHeight);
-  size(1200,720);
+  size(1200, 720);
   smooth();
   colorMode(HSB);
   background(0);
@@ -40,8 +47,8 @@ void setup() {
 
 void draw() {
   background(0);
-  fill(255,255,255);
-  text("SCORE / NOTES", 20,20);
+  fill(255, 255, 255);
+  text("SCORE / NOTES", 20, 20);
   noFill();
   for (int i=0; i<scores.size(); i++) {
     scores.get(i).anim();
@@ -51,10 +58,10 @@ void draw() {
       for (int j=0; j<last; j++) {
         point = scores.get(i).notes.get(j).V.get();
         vertex(point.x, point.y);
-        rect(point.x, point.y, 10, 10);
+        if (showPoint) rect(point.x, point.y, 10, 10);
       } // for j
       endShape();
-      fill(255,255,255);
+      fill(255, 255, 255);
       text(i+1 + " / " + last, point.x+20, point.y+20);
       noFill();
     } // if last
@@ -85,39 +92,55 @@ void mouseReleased() {
 } // mouseReleased()
 
 
-// A SCORE IS MADE OF A SERIE OF CONNECTED NOTES
-
-class Score {
-  ArrayList <Note> notes = new ArrayList <Note>();
-
-  Score() {
-  } // constructor Score
-
-  void anim() {
-    PVector A = new PVector(random(-2, 2), random(-1, 1) );
-    for (int i=0; i<=notes.size()-1; i++) {
-      notes.get(i).V.add(A);
-      //notes.get(i).V.x += cos(radians( frameCount ));
-      //notes.get(i).V.y += sin(radians( frameCount ));
-    }
-  } // anim()
-} // class Score
-
-
-// A NOTE IS A POINT WITH X, Y VECTOR COORDINATES 
-// AND A DISTANCE/DELTA FROM THE PREVIOUS ONE
-
-class Note {
-  PVector V;
-  float d;
-
-  void copy(Note toCopy) {
-    V = toCopy.V.get();
-    d = toCopy.d;
+void keyPressed() {
+  if (key == DELETE || key == BACKSPACE) {
+    background(0);
+    scores.clear();
+    currentS = 0;
   }
+  if (key == 'U' || key == 'u') {
+    if (currentS > 0) {
+      scores.get(currentS-1).notes.clear();
+      currentS--;
+    }
+  }  
+  if (key == 'p' || key == 'P') showPoint = !showPoint;  
+}
 
-  Note(PVector vTemp, float dTemp) {
-    V = vTemp.get();
-    d = dTemp;
-  } // constructor Note
-} // class Note
+
+  // A SCORE IS MADE OF A SERIE OF CONNECTED NOTES
+
+  class Score {
+    ArrayList <Note> notes = new ArrayList <Note>();
+
+    Score() {
+    } // constructor Score
+
+      void anim() {
+      PVector A = new PVector(random(-2, 2), random(-1, 1) );
+      for (int i=0; i<=notes.size()-1; i++) {
+        notes.get(i).V.add(A);
+        //notes.get(i).V.x += cos(radians( frameCount ));
+        //notes.get(i).V.y += sin(radians( frameCount ));
+      }
+    } // anim()
+  } // class Score
+
+
+  // A NOTE IS A POINT WITH X, Y VECTOR COORDINATES 
+  // AND A DISTANCE/DELTA FROM THE PREVIOUS ONE
+
+  class Note {
+    PVector V;
+    float d;
+
+    void copy(Note toCopy) {
+      V = toCopy.V.get();
+      d = toCopy.d;
+    }
+
+    Note(PVector vTemp, float dTemp) {
+      V = vTemp.get();
+      d = dTemp;
+    } // constructor Note
+  } // class Note
