@@ -46,7 +46,7 @@ void draw() {
     else {
       // CURRENT POTENTIAL NEW VERTEX
       Pc = new PVector(mouseX, mouseY);
-      // PREVIOUS TRIANLE ARRAY INDEX
+      // PREVIOUS TRIANGLE ARRAY INDEX
       int quale;
       if (corrente>0) {  
         quale = corrente-1;
@@ -77,7 +77,7 @@ void draw() {
       }
     }
     // ADD A TRIANGLE IF IT IS THE FIRST
-    // OR IS "BIG/FAR" ENOUGH
+    // OR IT IS "BIG/FAR" ENOUGH (linear distance...)
     if (isFirst || (d1> TriangleMinSize && d2> TriangleMinSize && d3> TriangleMinSize )) {
       tail[corrente] = new Triangle(P1, P2, P3);
       corrente+=1;
