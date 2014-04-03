@@ -22,6 +22,7 @@ int corrente = 0;
 boolean isFirst = true;
 PVector P1, P2, P3, Pc;
 float d1, d2, d3;
+float TriangleMinSize = 250;
 
 
 void setup() {
@@ -77,7 +78,7 @@ void draw() {
     }
     // ADD A TRIANGLE IF IT IS THE FIRST
     // OR IS "BIG/FAR" ENOUGH
-    if (isFirst || (d1>200 && d2>200 && d3>200)) {
+    if (isFirst || (d1> TriangleMinSize && d2> TriangleMinSize && d3> TriangleMinSize )) {
       tail[corrente] = new Triangle(P1, P2, P3);
       corrente+=1;
       if (corrente > tail.length-1) corrente = 0;
