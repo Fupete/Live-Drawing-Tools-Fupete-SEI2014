@@ -5,5 +5,5 @@ Live-Drawing-Tools-Fupete-SEI2014-UnirSM
 
 This repository will contains just examples, ideas, prototypes for/from the course I teach.
 
-© Daniele @ Fupete.
+© Daniele @ Fupete
 MIT License. San Marino, 2014
