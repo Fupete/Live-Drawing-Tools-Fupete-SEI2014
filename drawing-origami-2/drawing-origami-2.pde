@@ -17,24 +17,50 @@
  *
  */
 
+import controlP5.*;
+
+ControlP5 interfaccia;
+
 Triangle[] tail = new Triangle[10];
 int corrente = 0;
 boolean isFirst = true;
+boolean cancella = true;
 PVector P1, P2, P3, Pc;
 float d1, d2, d3;
 float TriangleMinSize = 250;
 
 
-void setup() {
-  size(1200,720);
+void setup() {  
+  size(1200, 720);
   background(255);
   stroke(255);
   fill(0);
+
+  interfaccia = new ControlP5(this);
+
+  Group ADMIN = interfaccia.addGroup("ADMIN")
+    .setPosition(10, 20)
+      .setWidth(200)
+      .setBackgroundHeight(70)
+        .setBackgroundColor(color(150))
+          ;
+
+  //create a slider for the TriangleMinSize parameter
+  // name, minValue, maxValue, defaultValue, x, y, width, height
+  interfaccia.addSlider("TriangleMinSize", 1, 500, 250, 10, 10, 100, 14)
+    .setGroup(ADMIN)
+    ;
+
+  // create a toggle and change the default look to a (on/off) switch look
+  interfaccia.addToggle("cancella")
+    .setSize(14, 14)
+    .setGroup(ADMIN)
+      ;
 }
 
 
 void draw() {
-  background(255);
+   background(255);
   if (mousePressed) {
     if (isFirst) { 
       P1 = new PVector(mouseX, mouseY);
@@ -96,14 +122,18 @@ void draw() {
 
 
 void mouseReleased() {
+
+
   // CLEAR THE TAIL
-  for (int i=0; i <tail.length; i++) {
+   if (cancella) {
+     for (int i=0; i <tail.length; i++) {
     if (tail[i] != null && tail[i].exist) {
       tail[i].exist = false;
     }
   }
   background(255);
   isFirst=true;
+   }
 }
 
 
