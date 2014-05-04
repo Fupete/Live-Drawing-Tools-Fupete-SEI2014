@@ -38,29 +38,30 @@ void setup() {
 
   interfaccia = new ControlP5(this);
 
+  // create a group for all the gui element called ADMIN
   Group ADMIN = interfaccia.addGroup("ADMIN")
     .setPosition(10, 20)
-      .setWidth(200)
-      .setBackgroundHeight(70)
-        .setBackgroundColor(color(150))
-          ;
+    .setWidth(200)
+    .setBackgroundHeight(70)
+    .setBackgroundColor(color(150))
+    ;
 
-  //create a slider for the TriangleMinSize parameter
+  // create a slider for the TriangleMinSize parameter
   // name, minValue, maxValue, defaultValue, x, y, width, height
   interfaccia.addSlider("TriangleMinSize", 1, 500, 250, 10, 10, 100, 14)
     .setGroup(ADMIN)
     ;
 
-  // create a toggle and change the default look to a (on/off) switch look
+  // create a toggle button to control "delete screen" or not
   interfaccia.addToggle("cancella")
     .setSize(14, 14)
     .setGroup(ADMIN)
-      ;
-}
+    ;
+} // setup()
 
 
 void draw() {
-   background(255);
+  background(255);
   if (mousePressed) {
     if (isFirst) { 
       P1 = new PVector(mouseX, mouseY);
@@ -72,7 +73,7 @@ void draw() {
     else {
       // CURRENT POTENTIAL NEW VERTEX
       Pc = new PVector(mouseX, mouseY);
-      // PREVIOUS TRIANLE ARRAY INDEX
+      // PREVIOUS TRIANGLE ARRAY INDEX
       int quale;
       if (corrente>0) {  
         quale = corrente-1;
@@ -103,7 +104,7 @@ void draw() {
       }
     }
     // ADD A TRIANGLE IF IT IS THE FIRST
-    // OR IS "BIG/FAR" ENOUGH
+    // OR IT IS "BIG/FAR" ENOUGH (linear distance...)
     if (isFirst || (d1> TriangleMinSize && d2> TriangleMinSize && d3> TriangleMinSize )) {
       tail[corrente] = new Triangle(P1, P2, P3);
       corrente+=1;
@@ -118,23 +119,21 @@ void draw() {
       tail[i].display();
     }
   }
-}
+} // draw()
 
 
 void mouseReleased() {
 
-
-  // CLEAR THE TAIL
-   if (cancella) {
+  if (cancella) {
+     // CLEAR THE TAIL
      for (int i=0; i <tail.length; i++) {
-    if (tail[i] != null && tail[i].exist) {
-      tail[i].exist = false;
-    }
-  }
-  background(255);
-  isFirst=true;
-   }
-}
+      if (tail[i] != null && tail[i].exist)
+        tail[i].exist = false;
+     } 
+     background(255);
+     isFirst=true;
+  } 
+} // mouseReleased()
 
 
 class Triangle {
@@ -148,12 +147,12 @@ class Triangle {
     V3 = Vc.get();
     exist = true;
     //Vr.add(V1);
-  }
+  } // Triangle()
 
   void display() {
     //fill(255,0,0);
     //triangle(Vr.x, Vr.y, V2.x, V2.y, V3.x, V3.y);
     fill(0);
     triangle(V1.x, V1.y, V2.x, V2.y, V3.x, V3.y);
-  }
-}
+  } // display()
+} // class Triangle
