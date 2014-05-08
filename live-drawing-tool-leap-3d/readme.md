@@ -1,1 +1,4 @@
-23/5/2014 Presentation @ Biennale del Disegno, Rimini, details soon
+23/5/2014 Presentation @ Biennale del Disegno, Rimini
+======
+
+*Details soon...*
