@@ -2,7 +2,7 @@
 // LEAP DRAWING TOOL 1
 // © Daniele @ Fupete for the course SEI2014 @ UnirSM  
 // github.com/fupete — github.com/sei2014-unirsm
-// Made for educational purposes, MIT License, March 2014, San Marino
+// Made for educational purposes, MIT License, May 2014, San Marino
 // —
 
 /*
