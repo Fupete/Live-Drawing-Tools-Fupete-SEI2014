@@ -23,10 +23,10 @@
  * screen-tap gesture  : change brush
  * swipe gesture       : clear
  *
- * TOP SCREENS SLIDERS
- * left                : limit max length of each mark array
- * register            : distance/threshold or both to calculate brush 'connections'
- * alpha               : brushes alpha
+ * TOP SCREEN SLIDERS (LEFT TO RIGHT)
+ * left                : limit max length of each mark arrayList
+ * register            : distance/threshold, or both, to calculate brush 'connections'
+ * alpha               : alpha
  *
  * TO DO (too much :-)
  *
