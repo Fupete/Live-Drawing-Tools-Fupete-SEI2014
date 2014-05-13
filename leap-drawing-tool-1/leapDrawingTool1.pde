@@ -16,6 +16,8 @@
  * SPACE               : clear
  * 2..5                : brushes
  * 1                   : special "base" brush
+ * C                   : change color
+ * B/N                 : white/black color
  * 
  * LEAP
  * finger/s            : draw
@@ -106,7 +108,7 @@ public void setup() {
 
 public void draw() {
   stroke(c, trasp);
-  // for each leap finger on scens instance a brush with its position
+  // for each leap finger instance a brush with its position
   for (Finger finger : leap.getFingerList()) {
     PVector fingerPos = leap.getTip(finger);
     brushes.get(selected_brush).leapDrawing(fingerPos.x, fingerPos.y);
