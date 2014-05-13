@@ -52,12 +52,14 @@ import com.leapmotion.leap.Gesture.Type;
 ControlP5 options;
 LeapMotionP5 leap; 
 
+// an array of classes 'brush'
 ArrayList<brush> brushes = new ArrayList<brush>();
 
+// defaults
 int selected_brush = 1; // 0..5
-int limit = 1500; // max length of each mark array
-float trasp = 20;
-float register = 90;
+int limit = 1500; // max length of each 'hist' array inside a brush
+float trasp = 20; 
+float register = 90; 
 color c = color(255);
 
 public void setup() {
@@ -67,38 +69,34 @@ public void setup() {
   size(1024, 768);
   background(0);
   
+  // define and style the three sliders top screen
   options = new ControlP5(this);
-  options.addSlider("limit", 1, 5000, 1500, 10, 10, 150, 11)
-  .setSliderMode(Slider.FLEXIBLE)
+  options
   .setColorForeground(#ffffff)
   .setColorActive(#ff0000)
   .setColorBackground(#111111)
-  .setColorValueLabel(#444444)
+  .setColorValueLabel(#444444);
+  options.addSlider("limit", 1, 5000, 1500, 10, 10, 150, 11)
+  .setSliderMode(Slider.FLEXIBLE)
   .setHandleSize(2);
   options.addSlider("register", 1, 500, 90, 200, 10, 150, 11)
   .setSliderMode(Slider.FLEXIBLE)
-  .setColorForeground(#ffffff)
-  .setColorActive(#ff0000)
-  .setColorBackground(#111111)
-  .setColorValueLabel(#444444)
   .setHandleSize(2);
   options.addSlider("trasp", 1, 250, 20, 390, 10, 150, 11)
   .setSliderMode(Slider.FLEXIBLE)
-  .setColorForeground(#ffffff)
-  .setColorActive(#ff0000)
-  .setColorBackground(#111111)
-  .setColorValueLabel(#444444)
   .setHandleSize(2);
   options.getController("limit").setCaptionLabel("");
   options.getController("register").setCaptionLabel("");
   options.getController("trasp").setCaptionLabel("");
 
+  // fill the brushes array 
   brushes.add(new base());
   brushes.add(new sketch());
   brushes.add(new chrome());
   brushes.add(new web());
   brushes.add(new shaded());
 
+  // enable the leap motion and its gestures
   leap = new LeapMotionP5(this);
   leap.enableGesture(Type.TYPE_SWIPE);
   leap.enableGesture(Type.TYPE_SCREEN_TAP);
@@ -108,15 +106,17 @@ public void setup() {
 
 public void draw() {
   stroke(c, trasp);
+  // for each leap finger on scens instance a brush with its position
   for (Finger finger : leap.getFingerList()) {
     PVector fingerPos = leap.getTip(finger);
     brushes.get(selected_brush).leapDrawing(fingerPos.x, fingerPos.y);
   }
-}
+} // draw()
 
 void mouseDragged() {
+  // draw also with the mouse, debug purpose
   brushes.get(selected_brush).mouseDragged();
-}
+} // mouseDragged
 
 void keyPressed() {
   if (key == ' ') {
@@ -155,7 +155,7 @@ void keyPressed() {
   else if (key == 'n' || key == 'N') {
     c=color(0); 
   }
-}
+} // keypressed
 
 public void swipeGestureRecognized(SwipeGesture gesture) {
   if (gesture.state() == State.STATE_STOP) {
@@ -168,7 +168,7 @@ public void swipeGestureRecognized(SwipeGesture gesture) {
       println("swipe");
     }
   }
-}
+} // swipeGestureRecognized
 
 public void screenTapGestureRecognized(ScreenTapGesture gesture) {
   if (gesture.state() == State.STATE_STOP) {
@@ -181,15 +181,15 @@ public void screenTapGestureRecognized(ScreenTapGesture gesture) {
     println(selected_brush);
     println("screentap");
   }
-}
+} // screenTapGestureRecognized
 
 public void keyTapGestureRecognized(KeyTapGesture gesture) {
   if (gesture.state() == State.STATE_STOP) {
     println("keytap");
     c=color(random(0, 255), random(0, 255), random(0, 255)); 
   }
-}
+} // keyTapGestureRecognized
 
 public void stop() {
   leap.stop();
-}
+} // stop
