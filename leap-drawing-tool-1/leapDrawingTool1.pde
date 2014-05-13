@@ -157,6 +157,9 @@ void keyPressed() {
   else if (key == 'n' || key == 'N') {
     c=color(0); 
   }
+  else if (key == 'p' || key == 'P') {
+    magicPoints();
+  }
 } // keypressed
 
 public void swipeGestureRecognized(SwipeGesture gesture) {
@@ -191,6 +194,19 @@ public void keyTapGestureRecognized(KeyTapGesture gesture) {
     c=color(random(0, 255), random(0, 255), random(0, 255)); 
   }
 } // keyTapGestureRecognized
+
+void magicPoints() {
+  background(0);
+  noStroke();
+  fill(255);
+  for (int i=1; i<random(1,44); i++) {
+    float px=random(50, width-50);
+    float py=random(50, height-50);
+    ellipse(px, py, 5, 5);
+    text(i,px-10,py-10);
+  } 
+  noFill();
+} // magicPoints
 
 public void stop() {
   leap.stop();
