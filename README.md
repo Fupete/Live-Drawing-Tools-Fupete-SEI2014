@@ -1,7 +1,7 @@
-Live-Drawing-Tools-Fupete-SEI2014-UnirSM
+drawing-tools-processing-2014
 ==================
 
-*Made for educational purpose*. Course SEI2014 @ UnirSM. Organization and syllabus on https://github.com/SEI2014-UnirSM/SEI2014-UnirSM
+*Made for educational purpose*. Course SEI2014 @ UnirSM. Syllabus on https://github.com/fupete/SEI-2014
 
 This repository will contains just examples, ideas, prototypes for/from the course I teach.
 
